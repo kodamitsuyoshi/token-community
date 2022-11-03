@@ -8,7 +8,26 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract MemberNFT is ERC721URIStorage, ERC721Enumerable, Ownable {
+    
+    /**
+     * @dev
+     * - _tolenIdsはCountersの全関数が使用可能
+     */
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIds;
+    
     constructor() ERC721("MemberNFT", "MEM") {}
+
+    /**
+     * @dev
+     * - このコントラクトをデプロイしたアドレスだけがMINT可能
+     */
+    function nftMint(address to, string calldata uri) external onlyOwner {
+        _tokenIds.increment();
+        uint256 newTokenId = _tokenIds.current();
+        _mint(to,newTokenId);
+        _setTokenURI(newTokenId,uri);
+    }
 
     /**
      * @dev Hook that is called before any token transfer. This includes minting

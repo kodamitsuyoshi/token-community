@@ -1,28 +1,58 @@
-const {expect} = require("Chai");
+const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
 
-describe("MemberNFTContract",function(){
-    it ("トークンと名前とシンボルがセットされるべき",async function(){
-        const name = "MemberNFT";
-        const symbol  = "MEM";
-        const MemberNFT = await ethers.getContractFactory("MemberNFT");
-        const memberNFT = await MemberNFT.deploy();
-        await  memberNFT.deployed();
-        expect(await memberNFT.name()).to.equal(name);
-        expect(await memberNFT.symbol()).to.equal(symbol);
-        
+describe("MemberNFTContract", function () {
+
+    let MemberNFT;
+    let memberNFT;
+    const name = "MemberNFT";
+    const symbol = "MEM";
+    let owner;
+    let addr1;
+
+    const tokenURI1 = "hoge1";
+    const tokenURI2 = "hoge2";
+
+
+    beforeEach(async function () {
+        [owner, addr1] = await ethers.getSigners();
+
+        MemberNFT = await ethers.getContractFactory("MemberNFT");
+        memberNFT = await MemberNFT.deploy();
+        await memberNFT.deployed();
 
     });
-    it ("デプロイアドレスがownerセットされるべき",async function(){
-        const [owner] = await ethers.getSigners();
 
-        const MemberNFT = await ethers.getContractFactory("MemberNFT");
-        const memberNFT = await MemberNFT.deploy();
-        await memberNFT.deployed();
-        
+    it("トークンと名前とシンボルがセットされるべき", async function () {
+        expect(await memberNFT.name()).to.equal(name);
+        expect(await memberNFT.symbol()).to.equal(symbol);
+
+
+    });
+    it("デプロイアドレスがownerセットされるべき", async function () {
 
         expect(await memberNFT.owner()).to.equal(owner.address);
 
+    });
+    it("ownerはNFT作成できるべき", async function () {
+        //expect().to.equal(0);
+        await memberNFT.nftMint(addr1.address, tokenURI1);
+        expect(await memberNFT.ownerOf(1)).to.equal(addr1.address);
+    });
+
+    it("NFT作成のたびにインクリメントされるべき", async function () {
+        await memberNFT.nftMint(addr1.address, tokenURI1);
+        await memberNFT.nftMint(addr1.address, tokenURI2);
+
+        expect(await memberNFT.tokenURI(1)).to.equal(tokenURI1);
+        expect(await memberNFT.tokenURI(2)).to.equal(tokenURI2);
+
+
+    });
+
+    it("owner以外はNFT作成できないべき", async function () {
+       await expect( memberNFT.connect(addr1).nftMint(addr1.address,tokenURI1))
+       .to.be.revertedWith('Ownable: caller is not the owner');
     });
 });
