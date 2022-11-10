@@ -7,21 +7,23 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
+
 contract MemberNFT is ERC721URIStorage, ERC721Enumerable, Ownable {
-    
+
     /**
      * @dev
      * - _tolenIdsはCountersの全関数が使用可能
      */
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
+
     /**
-     * @dev 
+     * @dev
      *  - だれにどのNFTをおくったか
      */
-    event TokenURIChanged(address indexed to , uint256 tokenId, string uri);
+    event TokenURIChanged(address indexed to, uint256 tokenId, string uri);
     
-    constructor() ERC721("MemberNFT", "MEM") {}
+    constructor() ERC721 ("MemberNFT", "MEM") {}
 
     /**
      * @dev
@@ -30,9 +32,9 @@ contract MemberNFT is ERC721URIStorage, ERC721Enumerable, Ownable {
     function nftMint(address to, string calldata uri) external onlyOwner {
         _tokenIds.increment();
         uint256 newTokenId = _tokenIds.current();
-        _mint(to,newTokenId);
-        _setTokenURI(newTokenId,uri);
-        emit TokenURIChanged(to,newTokenId,uri);
+        _mint(to, newTokenId);
+        _setTokenURI(newTokenId, uri);
+        emit TokenURIChanged(to, newTokenId, uri);
     }
 
     /**
