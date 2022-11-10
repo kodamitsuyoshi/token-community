@@ -34,13 +34,31 @@ contract TokenBank {
     ///@dev Token引き出し時のイベント
     event TokenWithdraw(address indexed from, uint256 amount);
 
-    constructor (string memory name_, string memory symbol_) {
+    constructor(string memory name_, string memory symbol_) {
         _name = name_;
         _symbol = symbol_;
         owner = msg.sender;
 
         _balances[owner] = _totalSupply;
-
     }
 
+    ///@dev Tokenの名前を返す
+    function name() public view returns (string memory) {
+        return _name;
+    }
+
+    ///@dev TokenのSymbolを返す
+    function symbol() public view returns (string memory) {
+        return _symbol;
+    }
+
+    ///@dev TokenのtotalSupplyを返す
+    function totalSupply() public pure returns (uint256 ) {
+        return _totalSupply;
+    }
+    
+    ///@dev 指定アカウントのToken残高を返す
+    function balanceOf(address account) public view returns (uint256 ) {
+        return _balances[account];
+    }
 }
