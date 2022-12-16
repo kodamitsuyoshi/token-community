@@ -19,7 +19,8 @@
   "homepage": "https://github.com/kodamitsuyoshi/token-community#readme",
   "dependencies": {
     "@openzeppelin/contracts": "^4.7.0",
-    "hardhat": "^2.9.9"
+    "hardhat": "^2.9.9",
+    "kill-port": "^2.0.1"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.6",
