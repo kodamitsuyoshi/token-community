@@ -99,4 +99,19 @@ contract TokenBank {
         _bankTotalDeposit += amount; 
         emit TokenDeposit(from, amount);
     } 
+
+    /// @dev Tokeを引き出す
+    function withdraw(uint256 amount) public {
+        address to = msg.sender;
+        address from = owner;
+        uint256 tokenBalance = _tokenBankBalances[to];
+
+        require(tokenBalance >= amount, "An amount greater tahn your tokenBank balance!");
+        
+        _transfer(from, to , amount);
+        _tokenBankBalances[to] -= amount;
+        _bankTotalDeposit -= amount; 
+        emit TokenWithdraw(to, amount);
+
+    }
 }
